@@ -10,8 +10,9 @@ public class GameManager : Singleton<GameManager>
     public Snake snake;
     public Food food;
 
-    public int goldenFoodCounter;
-    public int regularFoodCounter;
+    private int goldenFoodCounter;
+    private int regularFoodCounter;
+    private int score;
 
     private GameObject snakeHeadObj;
     private GameObject foodObj;
@@ -19,21 +20,15 @@ public class GameManager : Singleton<GameManager>
     private void Awake()
     {
         uiController = GetComponent<UIController>();
+        Init();
+    }
+
+    private void Init()
+    {
+        score = 0;
         uiController.Init();
         CreateSnake();
         SpawnFood();
-    }
-
-    private void Start()
-    {
-        
-    }
-
-    private void Update()
-    {
-        if(Input.GetKeyDown(KeyCode.F))
-            SpawnFood();
-
     }
 
     private void CreateSnake()
@@ -56,5 +51,27 @@ public class GameManager : Singleton<GameManager>
 
         foodObj.transform.position = randomPos;
         food.Init(randomPos);
+    }
+
+    public void SetScore(bool isGoldenFood = false)
+    {
+        if(isGoldenFood)
+        {
+            score += 500;
+            ++goldenFoodCounter;
+        }
+        else
+        {
+            score += 100;
+            ++regularFoodCounter;
+        }
+
+        //TODO Still need to print on UI
+
+        /* Not Readable version:
+            score += isGoldenFood ? 500 : 100;
+            goldenFoodCounter += Convert.ToInt32(isGoldenFood);
+            regularFoodCounter += Convert.ToInt32(!isGoldenFood);
+        */
     }
 }

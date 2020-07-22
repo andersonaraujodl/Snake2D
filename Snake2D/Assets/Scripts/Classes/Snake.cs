@@ -69,7 +69,7 @@ public class Snake : MonoBehaviour
 
         if ((Vector2) transform.position == GameManager.Instance.food.GetPosition)
         {
-            //TODO IncreseScore
+            //TODO IncreaseScore
             //TODO CheckSpeed
             //TODO CheckGolden
             //TODO GrowSnake
