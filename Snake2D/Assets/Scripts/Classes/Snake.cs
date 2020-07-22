@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Snake : MonoBehaviour
-{
-    private const float SCALE_MULTIPLIER = 2; //Used in case the default scale of the snake head is changed - it would be better working with textures of propper sizes
-    
+{    
     private Vector2 position;
     private Vector2 direction;
-    private float intervalBetweenMove = 1.2f;
+    private float intervalBetweenMove = .5f;
     private float currentTimeCount;
 
     public void Init()
@@ -66,7 +64,17 @@ public class Snake : MonoBehaviour
 
     private void Move()
     {
-        transform.Translate(direction * SCALE_MULTIPLIER);
+        transform.Translate(direction * GameManager.Instance.uiController.GetScaleMultiplier);
         currentTimeCount = intervalBetweenMove;
+
+        if ((Vector2) transform.position == GameManager.Instance.food.GetPosition)
+        {
+            //TODO IncreseScore
+            //TODO CheckSpeed
+            //TODO CheckGolden
+            //TODO GrowSnake
+
+            GameManager.Instance.food.Respawn();
+        }
     }
 }

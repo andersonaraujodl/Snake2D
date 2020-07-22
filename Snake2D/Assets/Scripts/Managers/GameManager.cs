@@ -4,15 +4,24 @@ using UnityEngine;
 
 public class GameManager : Singleton<GameManager>
 {
-    private UIController uiController;
+    [HideInInspector]
+    public UIController uiController;
 
-    private GameObject snakeHead;
-    private Snake snake;
+    public Snake snake;
+    public Food food;
+
+    public int goldenFoodCounter;
+    public int regularFoodCounter;
+
+    private GameObject snakeHeadObj;
+    private GameObject foodObj;
 
     private void Awake()
     {
         uiController = GetComponent<UIController>();
+        uiController.Init();
         CreateSnake();
+        SpawnFood();
     }
 
     private void Start()
@@ -20,16 +29,32 @@ public class GameManager : Singleton<GameManager>
         
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        
+        if(Input.GetKeyDown(KeyCode.F))
+            SpawnFood();
+
     }
 
     private void CreateSnake()
     {
-        snakeHead = Instantiate(uiController.snakeHead, uiController.level.transform);
-        snake = snakeHead.GetComponent<Snake>();
+        snakeHeadObj = Instantiate(uiController.snakeHeadPrefab, uiController.level.transform);
+        snake = snakeHeadObj.GetComponent<Snake>();
         snake.Init();
+    }
+
+    public void SpawnFood()
+    {
+        foodObj = Instantiate(uiController.foodPrefab, uiController.level.transform);
+        food = foodObj.GetComponent<Food>();
+        Vector2 randomPos = new Vector2(Random.Range(-uiController.GetWidth, uiController.GetWidth), Random.Range(-uiController.GetHeight, uiController.GetHeight));
+
+        //The following code rounds the position to a multiple of the ScaleMultiplier, ensuring the food stays in regular position, in case the scale of the snake != 1
+        float roundedX = Mathf.Round(randomPos.x / uiController.GetScaleMultiplier) * uiController.GetScaleMultiplier;
+        float roundedY = Mathf.Round(randomPos.y / uiController.GetScaleMultiplier) * uiController.GetScaleMultiplier;
+        randomPos = new Vector2(roundedX, roundedY);
+
+        foodObj.transform.position = randomPos;
+        food.Init(randomPos);
     }
 }
