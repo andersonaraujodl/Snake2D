@@ -9,6 +9,7 @@ public class GameManager : Singleton<GameManager>
 
     public Snake snake;
     public Food food;
+    public PlayerController playerController;
 
     private int goldenFoodCounter;
     private int regularFoodCounter;
@@ -33,9 +34,12 @@ public class GameManager : Singleton<GameManager>
 
     private void CreateSnake()
     {
-        snakeHeadObj = Instantiate(uiController.snakeHeadPrefab, uiController.level.transform);
+        snakeHeadObj = Instantiate(uiController.snakePrefab, uiController.level.transform);
         snake = snakeHeadObj.GetComponent<Snake>();
         snake.Init();
+
+        playerController = snakeHeadObj.GetComponent<PlayerController>();
+        playerController.Init(snake);
     }
 
     public void SpawnFood()

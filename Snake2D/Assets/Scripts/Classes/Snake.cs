@@ -3,78 +3,87 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Snake : MonoBehaviour
-{    
-    private Vector2 position;
+{
+    public Transform head;
+    public Transform tail;
+
+    private int size;
     private Vector2 direction;
-    private float intervalBetweenMove = .5f;
-    private float currentTimeCount;
+
+    private List<Transform> bodyList = new List<Transform>();
+
+    public Vector2 Direction
+    {
+        get { return direction; }
+        set { direction = value; }
+    }
+
+    public int Size
+    {
+        get { return size; }
+        set
+        {
+            size = value;
+            Grow();
+        }
+    }
+
+    public Transform SetTail
+    {
+        set
+        {
+            tail = value;
+        }
+    }
 
     public void Init()
     {
+        tail = head;
+        size = 2;
         transform.position = Vector2.zero;
         direction = new Vector2(0, 1f);
-        currentTimeCount = intervalBetweenMove;
-    }
+        bodyList.Add(head);
 
-    private void Update()
-    {
-        CheckInput();
-        currentTimeCount -= Time.deltaTime;
-
-        if (currentTimeCount <= 0)
+        for (int i = 1; i <= Size; ++i)
         {
-            Move();
+            Grow();
         }
     }
 
-    private void CheckInput()
+    public void Move()
     {
-        if (Input.GetKeyDown(KeyCode.UpArrow))
-        {
-            if (direction.y != -1f)
-            {
-                direction = new Vector2(0, 1f);
-            }
-        }
+        Vector2 movePosition = (Vector2) head.position + direction * GameManager.Instance.uiController.GetScaleMultiplier;
 
-        if (Input.GetKeyDown(KeyCode.DownArrow))
-        {
-            if (direction.y != 1f)
-            {
-                direction = new Vector2(0, -1f);
-            }
-        }
+        tail.transform.position = movePosition;
+        head.GetComponent<SnakeBody>().IsHead = false;
+        head = tail;
+        head.GetComponent<SnakeBody>().IsHead = true;
 
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            if (direction.x != 1f)
-            {
-                direction = new Vector2(-1f, 0);
-            }
-        }
+        bodyList.Insert(0, tail);
+        bodyList.RemoveAt(bodyList.Count - 1);
+        tail = bodyList[bodyList.Count - 1];
 
-        if (Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            if (direction.x != -1f)
-            {
-                direction = new Vector2(1f, 0);
-            }
-        }
+        CheckEat();
     }
 
-    private void Move()
+    public void CheckEat()
     {
-        transform.Translate(direction * GameManager.Instance.uiController.GetScaleMultiplier);
-        currentTimeCount = intervalBetweenMove;
-
-        if ((Vector2) transform.position == GameManager.Instance.food.GetPosition)
+        if ((Vector2)head.position == GameManager.Instance.food.GetPosition)
         {
             //TODO IncreaseScore
             //TODO CheckSpeed
             //TODO CheckGolden
-            //TODO GrowSnake
 
+            Size++;
             GameManager.Instance.food.Respawn();
         }
+    }
+
+    public void Grow()
+    {
+        GameObject bodyPiece = Instantiate(GameManager.Instance.uiController.snakeBodyPrefab, head.position, Quaternion.identity, GameManager.Instance.uiController.level.transform);
+        bodyPiece.GetComponent<SnakeBody>().Init();
+        head = bodyPiece.transform; //Make Head to ensure the snake only grows once the tail passes through the position of the food, avoiding possible collisions when the player reachers higher snake sizes
+        bodyList.Insert(0, head);
     }
 }

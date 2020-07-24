@@ -3,7 +3,8 @@
 public class UIController : MonoBehaviour
 {
     public GameObject level;
-    public GameObject snakeHeadPrefab;
+    public GameObject snakePrefab;
+    public GameObject snakeBodyPrefab;
     public GameObject foodPrefab;
     public SpriteRenderer background;
 

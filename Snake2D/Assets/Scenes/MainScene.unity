@@ -237,8 +237,7 @@ MonoBehaviour:
   uiController: {fileID: 0}
   snake: {fileID: 0}
   food: {fileID: 0}
-  goldenFoodCounter: 0
-  regularFoodCounter: 0
+  playerController: {fileID: 0}
 --- !u!4 &1233951765
 Transform:
   m_ObjectHideFlags: 0
@@ -267,7 +266,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   level: {fileID: 1307025030}
-  snakeHeadPrefab: {fileID: 192165504027308664, guid: 5f2fc362c5143ff4e8e57a1637e3a6e5,
+  snakePrefab: {fileID: 4601361356262832459, guid: 9a3b900571b89584ba3337e4445870c5,
+    type: 3}
+  snakeBodyPrefab: {fileID: 5458245240941028984, guid: 7fcc7863471b2d542b224b08f90f0fee,
     type: 3}
   foodPrefab: {fileID: 2815244518822731632, guid: 6e1ff9d6479ed5e4b9c3dab95eefcebd,
     type: 3}
