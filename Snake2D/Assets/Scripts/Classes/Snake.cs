@@ -7,10 +7,13 @@ public class Snake : MonoBehaviour
     public Transform head;
     public Transform tail;
 
+    public Color headColor;
+    public Color bodyColor;
+
     private int size;
     private Vector2 direction;
 
-    private List<Transform> bodyList = new List<Transform>();
+    public List<Transform> bodyList = new List<Transform>();
 
     public Vector2 Direction
     {
@@ -21,32 +24,29 @@ public class Snake : MonoBehaviour
     public int Size
     {
         get { return size; }
-        set
-        {
-            size = value;
-            Grow();
-        }
+        set { size = value; }
     }
 
-    public Transform SetTail
+    public Transform Tail
     {
-        set
-        {
-            tail = value;
-        }
+        get { return tail; }
+        set { tail = value; }
     }
 
     public void Init()
     {
-        tail = head;
-        size = 2;
+        size = transform.childCount - 1;
         transform.position = Vector2.zero;
         direction = new Vector2(0, 1f);
         bodyList.Add(head);
 
-        for (int i = 1; i <= Size; ++i)
+        for (int i = 1; i <= size; ++i)
         {
-            Grow();
+            Transform bodyPieceObj = transform.GetChild(i);
+            bodyList.Add(bodyPieceObj);
+
+            SnakeBody bodyPieceScript = bodyPieceObj.GetComponent<SnakeBody>();
+            bodyPieceScript.Init();
         }
     }
 
@@ -55,33 +55,36 @@ public class Snake : MonoBehaviour
         Vector2 movePosition = (Vector2) head.position + direction * GameManager.Instance.uiController.GetScaleMultiplier;
 
         tail.transform.position = movePosition;
-        head.GetComponent<SnakeBody>().IsHead = false;
+        head.GetComponent<SnakeBody>().IsHead(false);
         head = tail;
-        head.GetComponent<SnakeBody>().IsHead = true;
+        head.GetComponent<SnakeBody>().IsHead(true);
 
         bodyList.Insert(0, tail);
         bodyList.RemoveAt(bodyList.Count - 1);
         tail = bodyList[bodyList.Count - 1];
 
-        CheckEat();
+        CheckCollition();
     }
 
-    public void CheckEat()
+    //TODO Maybe I should think about a CollisionManager
+    public void CheckCollition()
     {
-        if ((Vector2)head.position == GameManager.Instance.food.GetPosition)
+        //TODO I should also change to collider to avoid miscalculation between Vector3.
+        if (head.position == GameManager.Instance.food.transform.position)
         {
             //TODO IncreaseScore
             //TODO CheckSpeed
             //TODO CheckGolden
 
-            Size++;
+            Grow();
             GameManager.Instance.food.Respawn();
         }
     }
 
     public void Grow()
     {
-        GameObject bodyPiece = Instantiate(GameManager.Instance.uiController.snakeBodyPrefab, head.position, Quaternion.identity, GameManager.Instance.uiController.level.transform);
+        Size++;
+        GameObject bodyPiece = Instantiate(GameManager.Instance.uiController.snakeBodyPrefab, head.position, Quaternion.identity, GameManager.Instance.snake.gameObject.transform);
         bodyPiece.GetComponent<SnakeBody>().Init();
         head = bodyPiece.transform; //Make Head to ensure the snake only grows once the tail passes through the position of the food, avoiding possible collisions when the player reachers higher snake sizes
         bodyList.Insert(0, head);

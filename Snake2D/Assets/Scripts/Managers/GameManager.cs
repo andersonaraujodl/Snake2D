@@ -44,17 +44,12 @@ public class GameManager : Singleton<GameManager>
 
     public void SpawnFood()
     {
-        foodObj = Instantiate(uiController.foodPrefab, uiController.level.transform);
-        food = foodObj.GetComponent<Food>();
-        Vector2 randomPos = new Vector2(Random.Range(-uiController.GetWidth, uiController.GetWidth), Random.Range(-uiController.GetHeight, uiController.GetHeight));
-
-        //The following code rounds the position to a multiple of the ScaleMultiplier, ensuring the food stays in regular position, in case the scale of the snake != 1
-        float roundedX = Mathf.Round(randomPos.x / uiController.GetScaleMultiplier) * uiController.GetScaleMultiplier;
-        float roundedY = Mathf.Round(randomPos.y / uiController.GetScaleMultiplier) * uiController.GetScaleMultiplier;
-        randomPos = new Vector2(roundedX, roundedY);
-
-        foodObj.transform.position = randomPos;
-        food.Init(randomPos);
+        if(foodObj == null)
+        {
+            foodObj = Instantiate(uiController.foodPrefab, uiController.level.transform);
+            food = foodObj.GetComponent<Food>();
+            food.Respawn();
+        }
     }
 
     public void SetScore(bool isGoldenFood = false)
