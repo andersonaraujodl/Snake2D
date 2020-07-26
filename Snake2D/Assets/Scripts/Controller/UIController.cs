@@ -6,6 +6,7 @@ public class UIController : MonoBehaviour
 {
     [Header("General")]
     public TextMeshProUGUI scoreValueText;
+    public TextMeshProUGUI highScoreValueText;
     public SpriteRenderer background;
 
     [Header("Prefabs")]
@@ -43,6 +44,12 @@ public class UIController : MonoBehaviour
     public void DrawScore(int score)
     {
         scoreValueText.text = score.ToString("D8");
+    }
+
+    public void DrawHighScore(int highScore)
+    {
+        highScoreValueText.text = highScore.ToString("D8");
+
     }
 
     public void FadeCanvasGroup(CanvasGroup canvasGroup, int alpha, float duration)

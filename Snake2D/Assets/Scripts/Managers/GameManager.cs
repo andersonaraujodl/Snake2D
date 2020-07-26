@@ -58,6 +58,8 @@ public class GameManager : Singleton<GameManager>
             highScore = 0;
             PlayerPrefs.SetInt("HighScore", highScore);
         }
+
+        uiController.DrawHighScore(highScore);
     }
 
     public void StartGame()
@@ -140,6 +142,7 @@ public class GameManager : Singleton<GameManager>
         {
             highScore = score;
             PlayerPrefs.SetInt("HighScore", highScore);
+            uiController.DrawHighScore(highScore);
         }
 
         StartCoroutine("DestroySnake");
