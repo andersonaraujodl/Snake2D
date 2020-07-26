@@ -2,31 +2,38 @@
 
 public class PlayerController : MonoBehaviour
 {
+    private const float SPEED_LOWEST_VALUE = 2;
+    private const float SPEED_DECREMENT = 2;
+
     private Snake snake;
-    private bool canChangeDir = true; //Created To Avoid player to change direction before the interval of movement
-    private float intervalBetweenMove = .5f;
     private float currentTimeCount;
+    private bool canChangeDir = true; //Created To Avoid player to change direction before the interval of movement
+    private float intervalBetweenMove = 50f;
 
     public void Init(Snake _snake)
     {
-        currentTimeCount = intervalBetweenMove;
+        intervalBetweenMove = 50f;
+        currentTimeCount = intervalBetweenMove / 100;
         snake = GetComponent<Snake>();
     }
 
     void Update()
     {
-        if(canChangeDir)
+        if(GameManager.Instance.isRunningGame)
         {
-            CheckInput();
-        }
+            if(canChangeDir)
+            {
+                CheckInput();
+            }
 
-        currentTimeCount -= Time.deltaTime;
+            currentTimeCount -= Time.deltaTime;
 
-        if (currentTimeCount <= 0)
-        {
-            snake.Move();
-            currentTimeCount = intervalBetweenMove;
-            canChangeDir = true;
+            if (currentTimeCount <= 0)
+            {
+                snake.Move();
+                currentTimeCount = intervalBetweenMove / 100;
+                canChangeDir = true;
+            }
         }
     }
 
@@ -36,8 +43,8 @@ public class PlayerController : MonoBehaviour
         {
             if (snake.Direction.y != -1f)
             {
-                snake.Direction = new Vector2(0, 1f);
                 canChangeDir = false;
+                snake.Direction = new Vector2(0, 1f);
             }
         }
 
@@ -45,8 +52,8 @@ public class PlayerController : MonoBehaviour
         {
             if (snake.Direction.y != 1f)
             {
-                snake.Direction = new Vector2(0, -1f);
                 canChangeDir = false;
+                snake.Direction = new Vector2(0, -1f);
             }
         }
 
@@ -54,8 +61,8 @@ public class PlayerController : MonoBehaviour
         {
             if (snake.Direction.x != 1f)
             {
-                snake.Direction = new Vector2(-1f, 0);
                 canChangeDir = false;
+                snake.Direction = new Vector2(-1f, 0);
             }
         }
 
@@ -63,9 +70,17 @@ public class PlayerController : MonoBehaviour
         {
             if (snake.Direction.x != -1f)
             {
-                snake.Direction = new Vector2(1f, 0);
                 canChangeDir = false;
+                snake.Direction = new Vector2(1f, 0);
             }
+        }
+    }
+
+    public void IncreaseSpreed()
+    {
+        if (intervalBetweenMove > SPEED_LOWEST_VALUE)
+        {
+            intervalBetweenMove -= SPEED_DECREMENT;
         }
     }
 }

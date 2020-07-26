@@ -1,24 +1,21 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class SnakeBody : MonoBehaviour
 {
     public bool isHead = false;
-
-    public Color headColor;
-    public Color bodyColor;
-
     public SpriteRenderer bodySprite;
 
-    public void Init()
+    private Snake snake;
+
+    public void Init(Snake _snake)
     {
+        snake = _snake;
         bodySprite = GetComponent<SpriteRenderer>();
     }
 
     public void IsHead(bool isHead)
     {
-        bodySprite.color = isHead ? headColor : bodyColor;
+        bodySprite.color = isHead ? snake.headColor : snake.bodyColor;
         bodySprite.sortingOrder = 1;
     }
 }

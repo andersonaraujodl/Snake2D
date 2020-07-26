@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6445305667253184708}
   m_Layer: 0
   m_Name: Food
-  m_TagString: Untagged
+  m_TagString: Food
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 2815244518822731632}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -72,7 +72,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 36eb9fc6ed7e3c44eba18c228a3c8af0, type: 3}
-  m_Color: {r: 0.48406905, g: 0.66538167, b: 0.9245283, a: 1}
+  m_Color: {r: 0.029859383, g: 0.5754717, b: 0.036061794, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -94,3 +94,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90d6c6692bc2dea4a94f45f57da96bc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isGolden: 0
+  regularColor: {r: 0.03137255, g: 0.5764706, b: 0.03529412, a: 1}
+  goldenColor: {r: 0.9339623, g: 0.8094536, b: 0, a: 1}

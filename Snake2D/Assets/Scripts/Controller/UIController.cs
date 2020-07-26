@@ -1,36 +1,64 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 public class UIController : MonoBehaviour
 {
-    public GameObject level;
+    [Header("General")]
+    public SpriteRenderer background;
+
+    [Header("Prefabs")]
     public GameObject snakePrefab;
     public GameObject snakeBodyPrefab;
     public GameObject foodPrefab;
-    public SpriteRenderer background;
 
-    private const float SCALE_MULTIPLIER = 2; //Used in case the default scale of the snake head is changed - it would be better working with textures of propper sizes
+    [Header("Screens")]
+    public GameObject level;
+    public GameOver gameOverScreen;
 
-    private float width;
-    private float height;
+    private int width;
+    private int height;
 
-    public float GetWidth
+    public int Width
     {
         get { return width;  }
     }
 
-    public float GetHeight
+    public int Height
     {
         get { return height; }
     }
 
-    public float GetScaleMultiplier
-    {
-        get { return SCALE_MULTIPLIER; }
-    }
-
     public void Init()
     {
-        width = background.GetComponent<SpriteRenderer>().bounds.size.x / 2;
-        height = background.GetComponent<SpriteRenderer>().bounds.size.y / 2;
+        width = (int)background.GetComponent<SpriteRenderer>().bounds.size.x / 2;
+        height = (int)background.GetComponent<SpriteRenderer>().bounds.size.y / 2;
+    }
+
+    public void FadeCanvasGroup(CanvasGroup canvasGroup, int alpha, float duration)
+    {
+        StartCoroutine(FadeInOut(canvasGroup, alpha, duration));
+    }
+
+    private IEnumerator FadeInOut(CanvasGroup canvasGroup, int alpha, float duration)
+    {
+        float elapsedTime = 0;
+        float startValue = canvasGroup.alpha;
+
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            float newAlpha = Mathf.Lerp(startValue, alpha, elapsedTime / duration);
+            canvasGroup.alpha = newAlpha;
+            yield return null;
+        }
+
+        if (canvasGroup.alpha > 0)
+        {
+            canvasGroup.blocksRaycasts = true;
+        }
+        else
+        {
+            canvasGroup.blocksRaycasts = false;
+        }
     }
 }

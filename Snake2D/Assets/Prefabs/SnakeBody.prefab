@@ -95,6 +95,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isHead: 0
-  headColor: {r: 0.016420428, g: 0.10539246, b: 0.38679248, a: 1}
-  bodyColor: {r: 0.07058824, g: 0.2392157, b: 0.7725491, a: 1}
   bodySprite: {fileID: 0}

@@ -2,6 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum CollisionType
+{
+    Food,
+    Wall,
+    Self
+}
+
 public class Snake : MonoBehaviour
 {
     public Transform head;
@@ -12,6 +19,9 @@ public class Snake : MonoBehaviour
 
     private int size;
     private Vector2 direction;
+
+    private int verticalLimit;
+    private int horizontalLimit;
 
     public List<Transform> bodyList = new List<Transform>();
 
@@ -27,32 +37,28 @@ public class Snake : MonoBehaviour
         set { size = value; }
     }
 
-    public Transform Tail
-    {
-        get { return tail; }
-        set { tail = value; }
-    }
-
     public void Init()
     {
         size = transform.childCount - 1;
         transform.position = Vector2.zero;
         direction = new Vector2(0, 1f);
-        bodyList.Add(head);
 
-        for (int i = 1; i <= size; ++i)
+        verticalLimit = GameManager.Instance.uiController.Height;
+        horizontalLimit = GameManager.Instance.uiController.Width;
+
+        for (int i = 0; i <= size; ++i)
         {
             Transform bodyPieceObj = transform.GetChild(i);
             bodyList.Add(bodyPieceObj);
 
             SnakeBody bodyPieceScript = bodyPieceObj.GetComponent<SnakeBody>();
-            bodyPieceScript.Init();
+            bodyPieceScript.Init(this);
         }
     }
 
     public void Move()
     {
-        Vector2 movePosition = (Vector2) head.position + direction * GameManager.Instance.uiController.GetScaleMultiplier;
+        Vector2 movePosition = (Vector2)head.position + direction;
 
         tail.transform.position = movePosition;
         head.GetComponent<SnakeBody>().IsHead(false);
@@ -63,21 +69,27 @@ public class Snake : MonoBehaviour
         bodyList.RemoveAt(bodyList.Count - 1);
         tail = bodyList[bodyList.Count - 1];
 
-        CheckCollition();
+        CheckCollision();
     }
 
-    //TODO Maybe I should think about a CollisionManager
-    public void CheckCollition()
+    public void CheckCollision()
     {
-        //TODO I should also change to collider to avoid miscalculation between Vector3.
         if (head.position == GameManager.Instance.food.transform.position)
         {
-            //TODO IncreaseScore
-            //TODO CheckSpeed
-            //TODO CheckGolden
-
+            //Hit Food
             Grow();
-            GameManager.Instance.food.Respawn();
+            GameManager.Instance.SetScore();
+        }
+        else if (head.position.y > verticalLimit || head.position.y < -verticalLimit ||
+            head.position.x > horizontalLimit || head.position.y < -horizontalLimit)
+        {
+            //Hit Wall
+            GameManager.Instance.GameOver();
+        }
+        else if(GameManager.Instance.CollideWithBody(head.position, true))
+        {
+            //Hit own body
+            GameManager.Instance.GameOver();
         }
     }
 
@@ -85,7 +97,7 @@ public class Snake : MonoBehaviour
     {
         Size++;
         GameObject bodyPiece = Instantiate(GameManager.Instance.uiController.snakeBodyPrefab, head.position, Quaternion.identity, GameManager.Instance.snake.gameObject.transform);
-        bodyPiece.GetComponent<SnakeBody>().Init();
+        bodyPiece.GetComponent<SnakeBody>().Init(this);
         head = bodyPiece.transform; //Make Head to ensure the snake only grows once the tail passes through the position of the food, avoiding possible collisions when the player reachers higher snake sizes
         bodyList.Insert(0, head);
     }
