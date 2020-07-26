@@ -1,13 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-
-public enum CollisionType
-{
-    Food,
-    Wall,
-    Self
-}
 
 public class Snake : MonoBehaviour
 {
@@ -77,11 +69,12 @@ public class Snake : MonoBehaviour
         if (head.position == GameManager.Instance.food.transform.position)
         {
             //Hit Food
+            SoundManager.Instance.PlaySFX(SoundManager.Instance.GetSFXClip("Eat"));
             Grow();
             GameManager.Instance.SetScore();
         }
         else if (head.position.y > verticalLimit || head.position.y < -verticalLimit ||
-            head.position.x > horizontalLimit || head.position.y < -horizontalLimit)
+            head.position.x > horizontalLimit || head.position.x < -horizontalLimit)
         {
             //Hit Wall
             GameManager.Instance.GameOver();

@@ -1,9 +1,11 @@
 ﻿using System.Collections;
 using UnityEngine;
+using TMPro;
 
 public class UIController : MonoBehaviour
 {
     [Header("General")]
+    public TextMeshProUGUI scoreValueText;
     public SpriteRenderer background;
 
     [Header("Prefabs")]
@@ -34,11 +36,22 @@ public class UIController : MonoBehaviour
         width = (int)background.GetComponent<SpriteRenderer>().bounds.size.x / 2;
         height = (int)background.GetComponent<SpriteRenderer>().bounds.size.y / 2;
 
+        gameOverScreen.gameObject.SetActive(false);
         menuScreen.Init(this);
+    }
+
+    public void DrawScore(int score)
+    {
+        scoreValueText.text = score.ToString("D8");
     }
 
     public void FadeCanvasGroup(CanvasGroup canvasGroup, int alpha, float duration)
     {
+        if(!canvasGroup.gameObject.activeSelf)
+        {
+            canvasGroup.gameObject.SetActive(true);
+        }
+
         StartCoroutine(FadeInOut(canvasGroup, alpha, duration));
     }
 
@@ -62,6 +75,7 @@ public class UIController : MonoBehaviour
         else
         {
             canvasGroup.blocksRaycasts = false;
+            canvasGroup.gameObject.SetActive(false);
         }
     }
 }

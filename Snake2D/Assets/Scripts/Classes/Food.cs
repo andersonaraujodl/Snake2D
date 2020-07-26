@@ -20,7 +20,7 @@ public class Food : MonoBehaviour
 
     public void Respawn()
     {
-        if(GameManager.Instance.isRunningGame)
+        if(GameManager.Instance.IsRunningGame)
         {
             if (!isGolden && GameManager.Instance.RegularFoodCounter > 0 && GameManager.Instance.RegularFoodCounter % 5 == 0)
             {

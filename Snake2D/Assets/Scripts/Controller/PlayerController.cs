@@ -19,7 +19,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        if(GameManager.Instance.isRunningGame)
+        if(GameManager.Instance.IsRunningGame)
         {
             if(canChangeDir)
             {

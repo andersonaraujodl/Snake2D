@@ -3,25 +3,42 @@ using UnityEngine;
 
 public class GameManager : Singleton<GameManager>
 {
-    [HideInInspector] public bool isRunningGame = false;
     [HideInInspector] public Food food;
     [HideInInspector] public Snake snake;
     [HideInInspector] public UIController uiController;
     [HideInInspector] public PlayerController playerController;
 
+    private int score;
+    private int highScore; 
+    private int totalFoodCounter;
     private int goldenFoodCounter;
     private int regularFoodCounter;
-    private int totalFoodCounter;
-    private int score;
+    private bool isRunningGame = false;
 
     private GameObject snakeHeadObj;
     private GameObject foodObj;
+
+    public bool IsRunningGame
+    {
+        get { return isRunningGame; }
+    }
 
     public int RegularFoodCounter
     {
         get { return regularFoodCounter; }
     }
 
+    public int Score
+    {
+        get { return score; }
+    }
+
+    public int HighScore
+    {
+        get { return highScore; }
+    }
+
+    //Game Start Method
     private void Awake()
     {
         uiController = GetComponent<UIController>();
@@ -31,6 +48,16 @@ public class GameManager : Singleton<GameManager>
     public void Init()
     {
         uiController.Init();
+
+        if (PlayerPrefs.HasKey("HighScore"))
+        {
+            highScore = PlayerPrefs.GetInt("HighScore");
+        }
+        else
+        {
+            highScore = 0;
+            PlayerPrefs.SetInt("HighScore", highScore);
+        }
     }
 
     public void StartGame()
@@ -41,6 +68,8 @@ public class GameManager : Singleton<GameManager>
         regularFoodCounter = 0;
 
         isRunningGame = true;
+        uiController.DrawScore(score);
+        SoundManager.Instance.PlayMusic(SoundManager.Instance.GetMusicClip("Game"));
         CreateSnake();
         SpawnFood();
     }
@@ -80,15 +109,14 @@ public class GameManager : Singleton<GameManager>
             ++regularFoodCounter;
         }
 
-        //Increment speed every 3 foods
-        if (totalFoodCounter % 3 == 0)
+        //Increment speed every 2 foods
+        if (totalFoodCounter % 2 == 0)
         {
             playerController.IncreaseSpreed();
         }
 
+        uiController.DrawScore(score);
         food.Respawn();
-
-        //TODO Still need to print on UI
     }
 
     public bool CollideWithBody(Vector2 position, bool ignoreHead = false)
@@ -108,15 +136,23 @@ public class GameManager : Singleton<GameManager>
     {
         isRunningGame = false;
 
+        if (score > highScore)
+        {
+            highScore = score;
+            PlayerPrefs.SetInt("HighScore", highScore);
+        }
+
         StartCoroutine("DestroySnake");
     }
 
     private IEnumerator DestroySnake()
     {
+        SoundManager.Instance.PlaySFX(SoundManager.Instance.GetSFXClip("Die"));
+
         foreach (var bodyPiece in snake.bodyList)
         {
             Destroy(bodyPiece.gameObject);
-            yield return new WaitForSeconds(0.05f);
+            yield return new WaitForSeconds(0.008f);
         }
 
         Destroy(snake.gameObject);
