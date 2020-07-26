@@ -13,6 +13,7 @@ public class UIController : MonoBehaviour
 
     [Header("Screens")]
     public GameObject level;
+    public Menu menuScreen;
     public GameOver gameOverScreen;
 
     private int width;
@@ -32,6 +33,8 @@ public class UIController : MonoBehaviour
     {
         width = (int)background.GetComponent<SpriteRenderer>().bounds.size.x / 2;
         height = (int)background.GetComponent<SpriteRenderer>().bounds.size.y / 2;
+
+        menuScreen.Init(this);
     }
 
     public void FadeCanvasGroup(CanvasGroup canvasGroup, int alpha, float duration)

@@ -30,13 +30,17 @@ public class GameManager : Singleton<GameManager>
 
     public void Init()
     {
+        uiController.Init();
+    }
+
+    public void StartGame()
+    {
         score = 0;
         totalFoodCounter = 0;
         goldenFoodCounter = 0;
         regularFoodCounter = 0;
-        isRunningGame = true;
 
-        uiController.Init();
+        isRunningGame = true;
         CreateSnake();
         SpawnFood();
     }

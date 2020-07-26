@@ -5,8 +5,9 @@ using UnityEngine.UI;
 public class GameOver : MonoBehaviour
 {
     public Button restartButton;
-    public CanvasGroup canvasGroup;
+    public Button menuButton;
 
+    private CanvasGroup canvasGroup;
     private UIController uiController;
 
     public void Init(UIController _uiController)
@@ -20,7 +21,13 @@ public class GameOver : MonoBehaviour
         restartButton.onClick.AddListener(() =>
         {
             uiController.FadeCanvasGroup(canvasGroup, 0, 0.5f);
-            GameManager.Instance.Init();
+            GameManager.Instance.StartGame();
+        });
+
+        menuButton.onClick.AddListener(() =>
+        {
+            uiController.FadeCanvasGroup(canvasGroup, 0, 0.5f);
+            uiController.menuScreen.ShowMenu();
         });
     }
 
