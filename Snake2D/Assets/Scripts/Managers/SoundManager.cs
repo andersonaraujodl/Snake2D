@@ -11,7 +11,24 @@ public class SoundManager : Singleton<SoundManager>
     public List<AudioClipDictionary> sfxClips;
     public List<AudioClipDictionary> musicClips;
 
-    private bool mute;
+    private bool isMute;
+    private UIController uiController;
+
+    public bool IsMute
+    {
+        get { return isMute; }
+    }
+
+    public void Init(UIController _uiController)
+    {
+        uiController = _uiController;
+
+        if(PlayerPrefs.HasKey("IsMute"))
+        {
+            isMute = (PlayerPrefs.GetInt("IsMute") == 1) ? true : false;
+            OnMuteChange();
+        }
+    }
 
     public AudioClip GetSFXClip(string name)
     {
@@ -26,17 +43,44 @@ public class SoundManager : Singleton<SoundManager>
     public void PlaySFX(AudioClip clip)
     {
         sfxSource.clip = clip;
-        sfxSource.Play();
+        
+        if (!isMute)
+        {
+            sfxSource.Play();
+        }
     }
 
     public void PlayMusic(AudioClip clip)
     {
         musicSource.clip = clip;
-        musicSource.Play();
+
+        if(!isMute)
+        {
+            musicSource.Play();
+        }
     }
 
-    public void Mute(bool status)
+    public void ToggleMute()
     {
-        mute = status;
+        isMute = !isMute;
+        int muteInt = isMute ? 1 : 0;
+        PlayerPrefs.SetInt("IsMute", muteInt);
+
+        OnMuteChange();
+    }
+
+    private void OnMuteChange()
+    {
+        uiController.OnSoundSettingClick();
+
+        if (isMute)
+        {
+            musicSource.Stop();
+            sfxSource.Stop();
+        }
+        else
+        {
+            musicSource.Play();
+        }
     }
 }

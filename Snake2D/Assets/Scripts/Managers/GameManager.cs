@@ -48,6 +48,7 @@ public class GameManager : Singleton<GameManager>
     public void Init()
     {
         uiController.Init();
+        SoundManager.Instance.Init(uiController);
 
         if (PlayerPrefs.HasKey("HighScore"))
         {

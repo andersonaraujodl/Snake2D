@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class UIController : MonoBehaviour
 {
@@ -8,6 +9,11 @@ public class UIController : MonoBehaviour
     public TextMeshProUGUI scoreValueText;
     public TextMeshProUGUI highScoreValueText;
     public SpriteRenderer background;
+
+    [Header("Settings")]
+    public Button SoundMudeButton;
+    public Sprite soundOnImg;
+    public Sprite soundOffImg;
 
     [Header("Prefabs")]
     public GameObject snakePrefab;
@@ -84,5 +90,10 @@ public class UIController : MonoBehaviour
             canvasGroup.blocksRaycasts = false;
             canvasGroup.gameObject.SetActive(false);
         }
+    }
+
+    public void OnSoundSettingClick()
+    {
+        SoundMudeButton.image.sprite = SoundManager.Instance.IsMute ? soundOffImg : soundOnImg;
     }
 }
